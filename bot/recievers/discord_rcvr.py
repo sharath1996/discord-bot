@@ -5,6 +5,8 @@ import datetime
 import os
 import dotenv
 import json
+import openai
+
 # Load environment variables from .env file
 dotenv.load_dotenv()
 
@@ -67,8 +69,8 @@ class RadiantStarterClient(discord.Client):
 
         scheduler = AsyncIOScheduler()
         # Replace CHANNEL_ID with your actual channel ID
-        scheduler.add_job(self.send_daily_night_message, 'cron', hour=21, minute=33)
-        scheduler.add_job(self.send_daily_morning_message, 'cron', hour=9, minute=0)  # For morning goals
+        scheduler.add_job(self.send_daily_night_message, 'cron', hour=21, minute=30, misfire_grace_time=60)  # For night goals
+        scheduler.add_job(self.send_daily_morning_message, 'cron', hour=6, minute=9, misfire_grace_time=60)  # For morning goals
         scheduler.start()
 
 
@@ -85,8 +87,9 @@ class RadiantStarterClient(discord.Client):
         channel_id = os.environ.get("DISCORD_CHANNEL_ID")
         channel = self.get_channel(int(channel_id))
         if channel:
-            await channel.send("Click the button below to submit your achievements for today:",
-                view=GoalsAtNightView()
+            local_str_night = self.get_night_text()
+            await channel.send(f"{local_str_night}",
+                # view=GoalsAtNightView()
             )
         else:
             print(f"Channel with ID {channel_id} not found.")
@@ -96,14 +99,53 @@ class RadiantStarterClient(discord.Client):
         channel_id = os.environ.get("DISCORD_CHANNEL_ID")
         channel = self.get_channel(int(channel_id))
         if channel:
+            local_str_greeting = self.get_morning_greeting()
             await channel.send(
-                "Click the button below to submit your plan for today:",
-                view=GoalsAtMorningView()
+                f"{local_str_greeting} ",
+                # view=GoalsAtMorningView()
             )
         else:
             print(f"Channel with ID {channel_id} not found.")
 
+    def get_morning_greeting(self):
+
+        # generate a morning greeting using OpenAI API
+        openai.api_key = os.getenv("OPENAI_API_KEY")
+        response = openai.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages = [
+                {"role": "system", "content": "You are a helpful assistant that generates sweet and interesting morning greetings."},
+                {"role": "user", "content": """Generate a sweet and interesting morning greeting for my loved one.
+            That message should include the remainder to plan the day and important tasks to them.
+               Your response should only the greeting and do not include any other conversational elements."""}
+            ],
+            temperature=0.7,
+            max_tokens=100
+        )
+
+        # Extract the text from the response
+        greeting_text = response.choices[0].message.content.strip()
+        return greeting_text
     
+    def get_night_text(self):
+
+        # generate a morning greeting using OpenAI API
+        openai.api_key = os.getenv("OPENAI_API_KEY")
+        response = openai.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that generates sweet and interesting night greetings."},
+                {"role": "user", "content": """Generate a sweet and interesting night greeting for my loved one.
+            That message should include the remainder to submit the achievements of the day and what are the important tasks that have already done.
+               Your response should only the greeting and do not include any other conversational elements."""}
+            ],
+            temperature=0.7,
+            max_tokens=100
+        )
+        # Extract the text from the response
+        night_text = response.choices[0].message.content.strip()
+        return night_text
+
     async def on_message(self, message:Message):
         # don't respond to ourselves
         if message.author == self.user:
