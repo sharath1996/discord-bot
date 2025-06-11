@@ -1,0 +1,80 @@
+{
+  "1": {
+    "title": "Upper Body Strength",
+    "workouts": [
+      "Warm-up: 10 min elliptical or rowing machine. Start at a gentle pace, gradually increasing intensity to raise your heart rate. Include 5 min of dynamic stretches (arm circles, shoulder rolls, band pull-aparts, push-ups).",
+      "Chest Press - 4 sets of 10 reps. Use a moderate weight, keep your back flat on the bench, and exhale as you press up. Rest 90 seconds between sets. Focus on slow, controlled movement.",
+      "Lat Pulldown - 4 sets of 10 reps. Pull the bar to your chest, squeeze your shoulder blades, and control the weight on the way up. Rest 90 seconds. Use a full range of motion.",
+      "Shoulder Press - 3 sets of 12 reps. Keep your core tight and press the weights overhead without locking your elbows. Rest 75 seconds. Perform standing for more core engagement.",
+      "Bicep Curl - 3 sets of 12 reps. Keep elbows close to your torso, curl the weights up, and lower slowly. Rest 60 seconds. Use dumbbells for better muscle activation.",
+      "Triceps Pushdown (Cable) - 3 sets of 12 reps. Keep elbows at your sides, push the bar down until arms are fully extended. Rest 60 seconds. Focus on squeezing at the bottom.",
+      "Core Finisher: Plank 3 x 45 sec hold, 30 sec rest. Hanging Knee Raise 3 x 12 reps, 30 sec rest.",
+      "Accessory: Seated Row - 3 sets of 12 reps. Squeeze shoulder blades, control the return. Rest 60 seconds.",
+      "Accessory: Face Pulls - 3 sets of 15 reps. Use light weight, pull to upper chest/face. Rest 45 seconds.",
+      "Cool-down: 5 min stretching. Focus on chest, shoulders, arms, and back. Hold each stretch for 30 seconds. Include deep breathing."
+    ]
+  },
+  "2": {
+    "title": "Cardio & Core",
+    "workouts": [
+      "Warm-up: 10 min cycling. Start easy, then increase resistance for the last 2 minutes. Add 5 min of dynamic stretches (leg swings, hip circles, jumping jacks).",
+      "Treadmill HIIT - 20 min (1 min sprint, 2 min walk). Repeat for 5 rounds. Sprint at 85-90% effort, walk to recover. Focus on good running form.",
+      "Elliptical Intervals - 15 min (2 min moderate, 1 min fast). Repeat for 5 rounds.",
+      "Plank - 4 sets of 40 sec. Keep your body in a straight line, elbows under shoulders, and core engaged. Rest 30 seconds.",
+      "Russian Twists (Cable) - 4 sets of 15 reps. Sit with knees bent, twist your torso side to side, holding the cable handle. Rest 30 seconds. Use a moderate weight.",
+      "Leg Raises - 4 sets of 12 reps. Lie flat, lift legs to 90°, lower slowly without touching the floor. Rest 30 seconds. Keep lower back pressed to the floor.",
+      "Core Circuit: Repeat 2 rounds: Bicycle Crunch x 20, Mountain Climbers x 30 sec, Side Plank x 30 sec each side.",
+      "Cool-down: 5 min stretching. Focus on abs, hip flexors, and lower back. Hold each stretch for 30 seconds. Include yoga poses like Child's Pose and Cobra."
+    ]
+  },
+  "3": {
+    "title": "Lower Body Strength",
+    "workouts": [
+      "Warm-up: 10 min stair climber or cycling. Start slow, increase speed for the last 2 minutes. Add 5 min of dynamic stretches (bodyweight squats, lunges, hip openers).",
+      "Leg Press - 4 sets of 10 reps. Keep feet shoulder-width, lower the platform until knees are at 90°, press up. Rest 90 seconds. Focus on controlled movement.",
+      "Leg Curl - 4 sets of 10 reps. Adjust the pad to your ankles, curl your legs up, and lower slowly. Rest 90 seconds. Squeeze at the top.",
+      "Leg Extension - 3 sets of 12 reps. Sit upright, extend legs fully, pause, and lower slowly. Rest 75 seconds. Do not lock knees.",
+      "Glute Kickback - 3 sets of 15 reps. Use cable or machine, kick leg back while keeping core tight. Rest 60 seconds. Squeeze glutes at the top.",
+      "Calf Raise - 4 sets of 15 reps. Stand on a step, rise onto toes, pause, and lower heels below step. Rest 60 seconds. Go slow on the way down.",
+      "Core Finisher: Side Plank 3 x 30 sec per side, 30 sec rest. Glute Bridge 3 x 15 reps, 30 sec rest.",
+      "Accessory: Walking Lunges - 3 sets of 20 steps. Hold dumbbells, keep torso upright. Rest 60 seconds.",
+      "Cool-down: 5 min stretching. Focus on quads, hamstrings, glutes, and calves. Hold each stretch for 30 seconds."
+    ]
+  },
+  "4": {
+    "title": "Cardio & Core",
+    "workouts": [
+      "Warm-up: 10 min rowing machine. Focus on smooth, controlled strokes. Add 5 min of dynamic stretches (arm swings, trunk rotations, high knees).",
+      "Elliptical HIIT - 20 min (1 min fast, 2 min slow). Push hard for 1 min, then recover for 2 min. Repeat for 7 rounds.",
+      "Bike Intervals - 15 min (2 min moderate, 1 min fast). Repeat for 5 rounds.",
+      "Side Plank - 4 sets of 30 sec (each side). Keep body straight, elbow under shoulder, hips lifted. Rest 30 seconds.",
+      "Cable Woodchoppers - 4 sets of 12 reps. Stand sideways to cable, pull handle diagonally across your body. Rest 30 seconds. Use a moderate weight.",
+      "Crunches - 4 sets of 15 reps. Keep lower back on the floor, lift shoulders, and squeeze abs. Rest 30 seconds.",
+      "Core Circuit: Repeat 2 rounds: V-Ups x 15, Heel Touches x 20, Plank x 40 sec.",
+      "Cool-down: 5 min stretching. Focus on obliques, abs, and lower back. Hold each stretch for 30 seconds. Include yoga poses like Pigeon and Seated Twist."
+    ]
+  },
+  "5": {
+    "title": "Full Body Strength",
+    "workouts": [
+      "Warm-up: 10 min elliptical or cycling. Start at a brisk pace, then increase intensity for the last 2 minutes. Add 5 min of dynamic stretches (jumping jacks, arm circles, bodyweight squats).",
+      "Smith Machine Squats - 4 sets of 10 reps. Keep feet shoulder-width, squat to 90°, drive up through heels. Rest 90 seconds. Focus on depth and control.",
+      "Chest Press - 4 sets of 10 reps. Use moderate weight, keep wrists straight, and exhale as you press. Rest 90 seconds. Squeeze at the top.",
+      "Lat Pulldown - 4 sets of 10 reps. Pull bar to chest, squeeze shoulder blades, control the return. Rest 90 seconds.",
+      "Leg Press - 3 sets of 12 reps. Keep knees in line with toes, avoid locking knees at the top. Rest 75 seconds.",
+      "Plank - 4 sets of 40 sec. Maintain a straight line from head to heels, keep abs tight. Rest 30 seconds.",
+      "Core Finisher: Hanging Knee Raise 3 x 12 reps, 30 sec rest. Russian Twist 3 x 20 reps, 30 sec rest.",
+      "Accessory: Seated Row - 3 sets of 12 reps. Squeeze shoulder blades, control the return. Rest 60 seconds.",
+      "Cool-down: 5 min stretching. Focus on all major muscle groups. Hold each stretch for 30 seconds. Include deep breathing."
+    ]
+  },
+  "6": {
+    "title": "Cardio & Recovery",
+    "workouts": [
+      "Warm-up: 10 min cycling. Start easy, gradually increase resistance. Add 5 min of dynamic stretches (leg swings, arm circles, hip openers).",
+      "Low-intensity steady-state cardio (LISS) - 20 min treadmill, 20 min cycling or elliptical. Maintain a steady, moderate pace that allows you to hold a conversation.",
+      "Yoga Poses: 30 min. Downward Dog, Warrior Pose, Cat-Cow Stretch, Pigeon Pose, Child's Pose. Hold each pose for 1-2 min, focus on breathing and relaxation.",
+      "Cool-down: 5 min gentle full-body stretches, hold each for 30 seconds, focus on deep breathing. Include foam rolling for legs and back if possible."
+    ]
+  }
+}

@@ -1,160 +1,167 @@
 import discord
-from discord import Message, TextChannel, Interaction
+from discord import Message, TextChannel
+from discord import app_commands
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-import datetime
 import os
 import dotenv
-import json
 import openai
-
+from abc import ABC, abstractmethod
+import json
+import datetime
 # Load environment variables from .env file
 dotenv.load_dotenv()
 
-class GoalsAtNightModal(discord.ui.Modal, title="Submit your achievements"):
-    
-    goals = discord.ui.TextInput(label="What did you do today?", style=discord.TextStyle.paragraph, required=True)
+# --- Interface for Greeting Generation (Single Responsibility, Open/Closed) ---
+class IGreetingGenerator(ABC):
+    @abstractmethod
+    def generate_greeting(self) -> str:
+        pass
 
-    async def on_submit(self, interaction: Interaction):
-        
-        # Dump this to a json file with timestamp
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        data = {
-            "timestamp": timestamp,
-            "achievments": self.goals.value,
-            "user": interaction.user.name,
-        }
-
-        with open('achievements.json', 'a') as f:
-            json.dump(data, f, indent=4)
-            
-        
-        await interaction.response.send_message(f"@{interaction.user.name} achievments are: {self.goals.value}", ephemeral=False)
-
-class GoalsAtNightView(discord.ui.View):
-    @discord.ui.button(label="Submit your achievements", style=discord.ButtonStyle.primary)
-    async def submit_goals(self, interaction: Interaction, button: discord.ui.Button):
-        await interaction.response.send_modal(GoalsAtNightModal())
-
-class GoalsAtMorningModal(discord.ui.Modal, title="Plan for today"):
-    
-    goals = discord.ui.TextInput(label="What are you planning do today?", style=discord.TextStyle.paragraph, required=True)
-
-    async def on_submit(self, interaction: Interaction):
-        
-        # Dump this to a json file with timestamp
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        data = {
-            "timestamp": timestamp,
-            "goals": self.goals.value,
-            "user": interaction.user.name,
-        }
-
-        with open('achievements.json', 'a') as f:
-            json.dump(data, f, indent=4)
-            
-        
-        await interaction.response.send_message("Your plans have been recorded!", ephemeral=True)
-
-class GoalsAtMorningView(discord.ui.View):
-    @discord.ui.button(label="Submit your plan", style=discord.ButtonStyle.primary)
-    async def submit_goals(self, interaction: Interaction, button: discord.ui.Button):
-        await interaction.response.send_modal(GoalsAtNightModal())
-
-class RadiantStarterClient(discord.Client):
-    
-    async def on_ready(self):
-        print('Logged on as', self.user)
-        # Schedule the daily message at 10 AM
-        # await self.send_hello_message()
-
-        scheduler = AsyncIOScheduler()
-        # Replace CHANNEL_ID with your actual channel ID
-        scheduler.add_job(self.send_daily_night_message, 'cron', hour=21, minute=30, misfire_grace_time=60)  # For night goals
-        scheduler.add_job(self.send_daily_morning_message, 'cron', hour=6, minute=9, misfire_grace_time=60)  # For morning goals
-        scheduler.start()
-
-
-    async def send_hello_message(self):
-        channel_id = os.environ.get("DISCORD_CHANNEL_ID")
-        channel = self.get_channel(int(channel_id))
-        if channel:
-            await channel.send("Hello! I am Radiant Starter Bot. I will help you to plan your day and track your achievements.")
-        else:
-            print(f"Channel with ID {channel_id} not found.")
-
-    
-    async def send_daily_night_message(self):
-        channel_id = os.environ.get("DISCORD_CHANNEL_ID")
-        channel = self.get_channel(int(channel_id))
-        if channel:
-            local_str_night = self.get_night_text()
-            await channel.send(f"{local_str_night}",
-                # view=GoalsAtNightView()
-            )
-        else:
-            print(f"Channel with ID {channel_id} not found.")
-    
-    
-    async def send_daily_morning_message(self):
-        channel_id = os.environ.get("DISCORD_CHANNEL_ID")
-        channel = self.get_channel(int(channel_id))
-        if channel:
-            local_str_greeting = self.get_morning_greeting()
-            await channel.send(
-                f"{local_str_greeting} ",
-                # view=GoalsAtMorningView()
-            )
-        else:
-            print(f"Channel with ID {channel_id} not found.")
-
-    def get_morning_greeting(self):
-
-        # generate a morning greeting using OpenAI API
-        openai.api_key = os.getenv("OPENAI_API_KEY")
+# --- Concrete Greeting Generators ---
+class MorningGreetingGenerator(IGreetingGenerator):
+    def generate_greeting(self) -> str:
+        openai.api_key = os.environ['OPENAI_API_KEY']
         response = openai.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages = [
+            model="gpt-4o-mini",
+            messages=[
                 {"role": "system", "content": "You are a helpful assistant that generates sweet and interesting morning greetings."},
-                {"role": "user", "content": """Generate a sweet and interesting morning greeting for my loved one.
-            That message should include the remainder to plan the day and important tasks to them.
-               Your response should only the greeting and do not include any other conversational elements."""}
+                {"role": "user", "content": (
+                    "Generate a sweet and interesting morning greeting for my loved one. "
+                    "That message should include the reminder to plan the day and important tasks to them. "
+                    "Your response should only be the greeting and do not include any other conversational elements. "
+                    "There shall be no placeholders in the response, just the complete greeting text."
+                )}
             ],
             temperature=0.7,
             max_tokens=100
         )
+        return response.choices[0].message.content.strip()
 
-        # Extract the text from the response
-        greeting_text = response.choices[0].message.content.strip()
-        return greeting_text
-    
-    def get_night_text(self):
-
-        # generate a morning greeting using OpenAI API
-        openai.api_key = os.getenv("OPENAI_API_KEY")
+class NightGreetingGenerator(IGreetingGenerator):
+    def generate_greeting(self) -> str:
+        openai.api_key = os.environ['OPENAI_API_KEY']
         response = openai.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant that generates sweet and interesting night greetings."},
-                {"role": "user", "content": """Generate a sweet and interesting night greeting for my loved one.
-            That message should include the remainder to submit the achievements of the day and what are the important tasks that have already done.
-               Your response should only the greeting and do not include any other conversational elements."""}
+                {"role": "user", "content": (
+                    "Generate a sweet and interesting night greeting for my loved one. "
+                    "That message should include the reminder to submit the achievements of the day and what are the important tasks that have already been done. "
+                    "Your response should only be the greeting and do not include any other conversational elements. "
+                    "There shall be no placeholders in the response, just the complete greeting text."
+                )}
             ],
             temperature=0.7,
             max_tokens=100
         )
-        # Extract the text from the response
-        night_text = response.choices[0].message.content.strip()
-        return night_text
+        return response.choices[0].message.content.strip()
 
-    async def on_message(self, message:Message):
-        # don't respond to ourselves
+class WorkOutGenerator:
+
+    def get_work_out_of_the_day(self) -> str:
+
+        with open("workout.json", "r") as file:
+            workout_data = json.load(file)
+        
+        # current day of the week in integer format (0=Monday, 6=Sunday)
+        current_day = datetime.datetime.now().weekday() +1
+
+        # Get the workout for the current day
+        local_dict_workOut = workout_data.get(str(current_day), "No workout planned for today.")
+        if local_dict_workOut == "No workout planned for today.":
+            return local_dict_workOut
+        local_str_workout = f"Today you can work on {local_dict_workOut['title']} \n {"\n".join(local_dict_workOut['workouts'])}"
+
+        return local_str_workout
+
+# --- Channel Service (Single Responsibility) ---
+class ChannelService:
+    
+    def __init__(self, client: discord.Client):
+        self.client = client
+
+    def get_channel(self) -> TextChannel:
+        
+        channel_id = os.environ.get("DISCORD_CHANNEL_ID")
+        
+        if not channel_id:
+            raise ValueError("DISCORD_CHANNEL_ID not set in environment variables.")
+        channel = self.client.get_channel(int(channel_id))
+        
+        if not channel:
+            raise ValueError(f"Channel with ID {channel_id} not found.")
+        
+        return channel
+
+# --- Scheduler Service (Single Responsibility, Dependency Inversion) ---
+class SchedulerService:
+    
+    def __init__(self, scheduler: AsyncIOScheduler):
+        self.scheduler = scheduler
+
+    def schedule_job(self, func, hour: int, minute: int, job_name: str):
+        self.scheduler.add_job(func, 'cron', hour=hour, minute=minute, misfire_grace_time=60, id=job_name)
+
+    def start(self):
+        self.scheduler.start()
+
+# --- Main Discord Bot Client (Single Responsibility, Liskov Substitution) ---
+class RadiantStarterClient(discord.Client):
+    
+    def __init__(self, intents: discord.Intents = discord.Intents.default()):
+        
+        super().__init__(intents=intents)
+
+        self._obj_channel = ChannelService(self)
+        self._obj_scheduler = SchedulerService(AsyncIOScheduler())
+
+    async def on_ready(self):
+        self._obj_scheduler.schedule_job(self.send_daily_night_message, hour=21, minute=30, job_name="night_message")
+        self._obj_scheduler.schedule_job(self.send_daily_morning_message, hour=6, minute=0, job_name="morning_message")
+        # self._obj_scheduler.schedule_job(self.send_workout_message, hour=6, minute=30, job_name="workout_message")
+        self._obj_scheduler.start()
+
+    async def send_hello_message(self):
+        try:
+            channel = self._obj_channel.get_channel()
+            await channel.send("Hello! I am Radiant Starter Bot. I will help you to plan your day and track your achievements.")
+        except Exception as e:
+            print(str(e))
+            
+    async def send_daily_night_message(self):
+        try:
+            channel = self._obj_channel.get_channel()
+            nightGreetingGenerator = NightGreetingGenerator()
+            night_greeting = nightGreetingGenerator.generate_greeting()
+            await channel.send(night_greeting)
+        except Exception as e:
+            print(str(e))
+
+    async def send_daily_morning_message(self):
+        try:
+            channel = self._obj_channel.get_channel()
+            morningGreetingGenerator = MorningGreetingGenerator()
+            morning_greeting = morningGreetingGenerator.generate_greeting()
+            await channel.send(morning_greeting)
+        except Exception as e:
+            print(str(e))
+
+    async def on_message(self, message: Message):
+        
         if message.author == self.user:
             return
         
-        local_obj_channel:TextChannel = message.channel
-
         if message.content.startswith('!workout'):
-            await local_obj_channel.send("In future, I will help you to plan your workout sessions. For now, Sorry!.")  
+            
+            workout_generator = WorkOutGenerator()
+            workout_message = workout_generator.get_work_out_of_the_day()
+            workout_message = f"Hey @{message.author.name}, \n{workout_message}"
+            await message.channel.send(workout_message)
+            
+    @app_commands.command(name="workout", description="Get workout of the day")
+    async def workout_command(self, interaction: discord.Interaction):
+        workout_generator = WorkOutGenerator()
+        workout_message = workout_generator.get_work_out_of_the_day()
+        await interaction.response.send_message(workout_message)
 
-
-    # on command handler
+    
